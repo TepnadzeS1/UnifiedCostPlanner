@@ -1,5 +1,7 @@
 package com.sandro.unifiedcostplanner.features.planner.domain.model
 
+import java.util.UUID
+
 data class Plan(
     val id: String = UUID.randomUUID().toString(),
     val title: String,
