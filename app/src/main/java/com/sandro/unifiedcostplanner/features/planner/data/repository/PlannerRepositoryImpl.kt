@@ -8,8 +8,9 @@ import com.sandro.unifiedcostplanner.features.planner.domain.model.PlannerItem
 import com.sandro.unifiedcostplanner.features.planner.domain.repository.PlannerRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class PlannerRepositoryImpl(
+class PlannerRepositoryImpl @Inject constructor(
     private val planDao: PlanDao
 ) : PlannerRepository {
 
