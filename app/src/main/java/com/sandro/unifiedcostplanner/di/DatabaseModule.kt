@@ -22,7 +22,9 @@ object DatabaseModule {
             context,
             CostPlannerDatabase::class.java,
             "cost_planner_db"
-        ).build()
+        )
+            .fallbackToDestructiveMigration() // This wipes the DB when the schema changes
+            .build()
     }
 
     @Provides

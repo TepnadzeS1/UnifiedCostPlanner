@@ -10,26 +10,43 @@ fun PlanEntity.toDomain(items: List<PlannerItemEntity>): Plan {
         id = this.id,
         title = this.title,
         description = this.description,
+        category = this.category,
+        startDate = this.startDate,
+        endDate = this.endDate,
         createdAt = this.createdAt,
         items = items.map { it.toDomain() }
     )
 }
 
-fun PlannerItemEntity.toDomain(): PlannerItem {
-    return PlannerItem(
-        id = this.id,
-        name = this.name,
-        quantity = this.quantity,
-        unitPrice = this.unitPrice,
-        currency = this.currency,
-        source = this.source,
-        imageUrl = this.imageUrl,
-        externalUrl = this.externalUrl
-    )
-}
+fun PlannerItemEntity.toDomain(): PlannerItem = PlannerItem(
+    id = id,
+    name = name,
+    quantity = quantity,
+    unitPrice = unitPrice,
+    currency = currency,
+    source = source,
+    imageUrl = imageUrl,
+    externalUrl = externalUrl
+)
 
-// And the reverse for saving
-fun Plan.toEntity(): PlanEntity = PlanEntity(id, title, description, createdAt)
+fun Plan.toEntity(): PlanEntity = PlanEntity(
+    id = id,
+    title = title,
+    description = description,
+    category = category,
+    startDate = startDate,
+    endDate = endDate,
+    createdAt = createdAt
+)
+
 fun PlannerItem.toEntity(planId: String): PlannerItemEntity = PlannerItemEntity(
-    id, planId, name, quantity, unitPrice, currency, source, imageUrl, externalUrl
+    id = id,
+    planId = planId,
+    name = name,
+    quantity = quantity,
+    unitPrice = unitPrice,
+    currency = currency,
+    source = source,
+    imageUrl = imageUrl,
+    externalUrl = externalUrl
 )

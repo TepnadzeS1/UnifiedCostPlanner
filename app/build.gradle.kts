@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.androidx.compose.icons.extended)
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.compose.ui.text.google.fonts)
     implementation("androidx.navigation:navigation-compose:2.7.7")
     ksp(libs.hilt.compiler)
 
