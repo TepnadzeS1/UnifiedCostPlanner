@@ -8,7 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.sandro.unifiedcostplanner.features.planner.domain.model.Plan
 import com.sandro.unifiedcostplanner.features.planner.domain.repository.PlannerRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -16,20 +18,30 @@ class CreatePlanViewModel @Inject constructor(
     private val repository: PlannerRepository
 ) : ViewModel() {
 
-    // Simple state for the input fields
     var title by mutableStateOf("")
     var description by mutableStateOf("")
 
     fun savePlan(onSuccess: () -> Unit) {
         if (title.isBlank()) return
 
-        viewModelScope.launch {
-            val newPlan = Plan(
-                title = title,
-                description = description
-            )
-            repository.savePlan(newPlan)
-            onSuccess() // Navigate back after saving
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val newPlan = Plan(
+                    title = title,
+                    description = description,
+                    category = "General",
+                    startDate = System.currentTimeMillis(),
+                    endDate = System.currentTimeMillis()
+                )
+
+                repository.savePlan(newPlan)
+
+                withContext(Dispatchers.Main) {
+                    onSuccess()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 }

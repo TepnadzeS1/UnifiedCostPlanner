@@ -2,11 +2,17 @@ package com.sandro.unifiedcostplanner.features.planner.data.local.dao
 
 import androidx.room.*
 import com.sandro.unifiedcostplanner.features.planner.data.local.entity.PlanEntity
+import com.sandro.unifiedcostplanner.features.planner.data.local.entity.PlanWithItems
 import com.sandro.unifiedcostplanner.features.planner.data.local.entity.PlannerItemEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PlanDao {
+
+    @Transaction // Required because Room is hitting two tables at once
+    @Query("SELECT * FROM plans ORDER BY createdAt DESC")
+    fun getAllPlansWithItems(): Flow<List<PlanWithItems>>
+
     @Query("SELECT * FROM plans ORDER BY createdAt DESC")
     fun getAllPlans(): Flow<List<PlanEntity>>
 

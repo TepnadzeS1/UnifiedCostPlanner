@@ -11,6 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.navigation.NavController
 import com.sandro.unifiedcostplanner.features.planner.domain.model.Plan
 import com.sandro.unifiedcostplanner.ui.theme.ChipBackground
 import com.sandro.unifiedcostplanner.ui.theme.PrimaryNavy
@@ -19,7 +21,14 @@ import com.sandro.unifiedcostplanner.ui.theme.SurfaceWhite
 @Composable
 fun PlanCard(
     plan: Plan,
-    onClick: () -> Unit
+    navController: NavController,
+    onClick: () -> Unit = {
+        // 🛡️ NAVIGATION GUARD: Only navigate if the screen is fully visible (Resumed)
+        // This prevents the "5-click" ANR by ignoring the extra 4 clicks
+        if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {
+            navController.navigate("detail/${plan.id}")
+        }
+    }
 ) {
     Card(
         onClick = onClick,

@@ -13,12 +13,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.sandro.unifiedcostplanner.features.planner.presentation.plan_list.components.PlanCard
 import com.sandro.unifiedcostplanner.features.planner.presentation.plan_list.viewmodel.PlanListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlanListScreen(
+    navController: NavController,
     onNavigateToCreate: () -> Unit,
     onNavigateToDetails: (String) -> Unit,
     viewModel: PlanListViewModel = hiltViewModel() // Hilt injects the ViewModel here
@@ -63,6 +65,7 @@ fun PlanListScreen(
                 items(state.plans) { plan ->
                     PlanCard(
                         plan = plan,
+                        navController = navController,
                         onClick = { onNavigateToDetails(plan.id) }
                     )
                 }

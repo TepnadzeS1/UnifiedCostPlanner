@@ -6,8 +6,12 @@ import com.sandro.unifiedcostplanner.features.planner.data.mapper.toEntity
 import com.sandro.unifiedcostplanner.features.planner.domain.model.Plan
 import com.sandro.unifiedcostplanner.features.planner.domain.model.PlannerItem
 import com.sandro.unifiedcostplanner.features.planner.domain.repository.PlannerRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class PlannerRepositoryImpl @Inject constructor(
@@ -15,32 +19,33 @@ class PlannerRepositoryImpl @Inject constructor(
 ) : PlannerRepository {
 
     override fun getPlans(): Flow<List<Plan>> {
-        return planDao.getAllPlans().map { entities ->
-            entities.map { entity ->
-                val items = planDao.getItemsForPlan(entity.id)
-                entity.toDomain(items)
+        return planDao.getAllPlansWithItems()
+            .map { list ->
+                list.map { planWithItems ->
+                    // Look! No more database queries inside this loop.
+                    // All the data is already here in 'planWithItems'.
+                    planWithItems.plan.toDomain(planWithItems.items)
+                }
             }
-        }
+            .distinctUntilChanged() // <--- CRITICAL: Only update UI if data actually changed
+            .flowOn(Dispatchers.IO) // <--- Moves the mapping loop to background
     }
 
-    override suspend fun getPlanById(id: String): Plan? {
-        // We fetch the plan entity first
-        val planEntity = planDao.getPlanById(id) ?: return null
-        // Then we fetch all items belonging to this plan
+    override suspend fun getPlanById(id: String): Plan? = withContext(Dispatchers.IO) {
+        val planEntity = planDao.getPlanById(id) ?: return@withContext null
         val items = planDao.getItemsForPlan(id)
-        // Convert the database stuff into a clean Domain Plan
-        return planEntity.toDomain(items)
+        planEntity.toDomain(items)
     }
 
-    override suspend fun savePlan(plan: Plan) {
+    override suspend fun savePlan(plan: Plan) = withContext(Dispatchers.IO) {
         planDao.insertPlan(plan.toEntity())
     }
 
-    override suspend fun addItemToPlan(planId: String, item: PlannerItem) {
+    override suspend fun addItemToPlan(planId: String, item: PlannerItem) = withContext(Dispatchers.IO) {
         planDao.insertItem(item.toEntity(planId))
     }
 
-    override suspend fun deletePlan(planId: String) {
+    override suspend fun deletePlan(planId: String) = withContext(Dispatchers.IO) {
         planDao.deletePlan(planId)
     }
 }

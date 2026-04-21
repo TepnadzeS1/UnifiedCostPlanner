@@ -6,7 +6,6 @@ import com.sandro.unifiedcostplanner.features.planner.domain.usecase.GetPlansUse
 import com.sandro.unifiedcostplanner.features.planner.presentation.plan_list.state.PlanListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -14,9 +13,7 @@ class PlanListViewModel @Inject constructor(
     private val getPlansUseCase: GetPlansUseCase
 ) : ViewModel() {
 
-    // We use MutableStateFlow to hold the UI state
     private val _state = MutableStateFlow(PlanListUiState())
-    // The UI can only read the state, never change it directly (Encapsulation)
     val state: StateFlow<PlanListUiState> = _state.asStateFlow()
 
     init {
@@ -26,18 +23,16 @@ class PlanListViewModel @Inject constructor(
     private fun loadPlans() {
         _state.update { it.copy(isLoading = true) }
 
-        // We observe the Flow from the Domain layer
         getPlansUseCase()
+            .distinctUntilChanged() // Don't trigger UI updates if the list is the same
             .onEach { plans ->
                 _state.update {
                     it.copy(isLoading = false, plans = plans)
                 }
             }
             .catch { error ->
-                _state.update {
-                    it.copy(isLoading = false, errorMessage = error.message)
-                }
+                _state.update { it.copy(isLoading = false, errorMessage = error.message) }
             }
-            .launchIn(viewModelScope) // Automatically cancels if the user leaves the screen
+            .launchIn(viewModelScope)
     }
 }
