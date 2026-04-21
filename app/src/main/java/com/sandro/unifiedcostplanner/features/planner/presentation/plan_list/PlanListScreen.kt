@@ -16,60 +16,29 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.sandro.unifiedcostplanner.features.planner.presentation.plan_list.components.PlanCard
 import com.sandro.unifiedcostplanner.features.planner.presentation.plan_list.viewmodel.PlanListViewModel
+import com.sandro.unifiedcostplanner.ui.theme.PrimaryNavy
+import com.sandro.unifiedcostplanner.ui.theme.SurfaceWhite
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlanListScreen(
-    navController: NavController,
     onNavigateToCreate: () -> Unit,
     onNavigateToDetails: (String) -> Unit,
-    viewModel: PlanListViewModel = hiltViewModel() // Hilt injects the ViewModel here
+    viewModel: PlanListViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(title = { Text("Unified Cost Planner") })
-        },
-        floatingActionButton = {
-            FloatingActionButton(onClick = onNavigateToCreate) {
-                Icon(Icons.Default.Add, contentDescription = "Create Plan")
-            }
-        }
-    ) { padding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-        ) {
-            // 1. Loading State
-            if (state.isLoading) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            }
-
-            // 2. Empty State
-            if (!state.isLoading && state.plans.isEmpty()) {
-                Text(
-                    text = "No plans yet. Tap + to start!",
-                    modifier = Modifier.align(Alignment.Center),
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
-
-            // 3. Success State (The List)
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                items(state.plans) { plan ->
-                    PlanCard(
-                        plan = plan,
-                        navController = navController,
-                        onClick = { onNavigateToDetails(plan.id) }
-                    )
-                }
-            }
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        // 🚀 THE KEY FIX: Tells Compose to track items by ID, not index
+        items(items = state.plans, key = { it.id }) { plan ->
+            PlanCard(
+                plan = plan,
+                onClick = { onNavigateToDetails(plan.id) }
+            )
         }
     }
 }
