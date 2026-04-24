@@ -21,6 +21,7 @@ import com.sandro.unifiedcostplanner.features.planner.presentation.create_plan.C
 import com.sandro.unifiedcostplanner.features.planner.presentation.plan_detail.PlanDetailScreen
 import com.sandro.unifiedcostplanner.features.planner.presentation.plan_list.PlanListScreen
 import com.sandro.unifiedcostplanner.features.search.presentation.SearchScreen
+import com.sandro.unifiedcostplanner.features.settings.presentation.SettingsScreen
 import com.sandro.unifiedcostplanner.ui.theme.UnifiedCostPlannerTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -81,6 +82,11 @@ class MainActivity : ComponentActivity() {
                         // 5. Search Screen
                         composable(BottomNavItem.Search.route) {
                             SearchScreen()
+                        }
+
+                        // 6. Settings Screen
+                        composable(BottomNavItem.Settings.route) {
+                            SettingsScreen()
                         }
                     }
                 }
