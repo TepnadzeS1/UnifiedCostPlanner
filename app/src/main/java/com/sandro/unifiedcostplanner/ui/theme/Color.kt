@@ -12,3 +12,5 @@ val SurfaceWhite = Color(0xFFFFFFFF)
 val TextPrimary = Color(0xFF121212)
 val TextSecondary = Color(0xFF757575)
 val ChipBackground = Color(0xFFE0E0E0)
+
+val ErrorRed = Color(0xFFD32F2F) // Matching the delete button in Figma
