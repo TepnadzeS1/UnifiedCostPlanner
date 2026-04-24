@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sandro.unifiedcostplanner.ui.theme.PrimaryNavy
 import java.util.Locale
+import androidx.compose.foundation.clickable
 
 @Composable
 fun SearchResultCard(
@@ -27,7 +28,8 @@ fun SearchResultCard(
     rating: Double,
     reviews: Int,
     isTopRated: Boolean = false,
-    platform: String = "eBay"
+    platform: String = "eBay",
+    onClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -37,7 +39,7 @@ fun SearchResultCard(
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.clickable { onClick() }.padding(16.dp)) {
             // 🖼️ The Image Area (Gradient placeholder)
             Box(
                 modifier = Modifier
