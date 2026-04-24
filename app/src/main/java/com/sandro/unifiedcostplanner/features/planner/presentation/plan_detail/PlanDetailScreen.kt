@@ -83,8 +83,6 @@ fun PlanDetailScreen(
         ) {
             item {
                 Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-                    Spacer(modifier = Modifier.height(24.dp))
-
                     // 1. Custom Top Bar (Figma Style)
                     Row(
                         modifier = Modifier.fillMaxWidth(),

@@ -33,38 +33,32 @@ val Typography = Typography(
     headlineMedium = TextStyle(
         fontFamily = Manrope,
         fontWeight = FontWeight.ExtraBold,
-        fontSize = 28.sp,
-        color = PrimaryNavy
+        fontSize = 28.sp
     ),
     headlineSmall = TextStyle(
         fontFamily = Manrope,
         fontWeight = FontWeight.Bold,
-        fontSize = 20.sp,
-        color = PrimaryNavy
+        fontSize = 20.sp
     ),
     titleLarge = TextStyle(
         fontFamily = Manrope,
         fontWeight = FontWeight.Bold,
-        fontSize = 22.sp,
-        color = TextPrimary
+        fontSize = 22.sp
     ),
     // Body and Labels use Inter
     bodyLarge = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        color = TextPrimary
+        fontSize = 16.sp
     ),
     bodyMedium = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
-        color = TextSecondary
+        fontSize = 14.sp
     ),
     labelLarge = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
-        color = PrimaryNavy
+        fontSize = 14.sp
     )
 )

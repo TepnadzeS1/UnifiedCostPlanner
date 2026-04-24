@@ -1,6 +1,7 @@
 package com.sandro.unifiedcostplanner.features.catalog.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -20,7 +21,8 @@ fun CatalogItemCard(
     subtitle: String,
     price: Double,
     unit: String,
-    isFeatured: Boolean = false
+    isFeatured: Boolean = false,
+    onClick: () -> Unit // 🚀 NEW: We added this parameter so the card knows when it's tapped!
 ) {
     Card(
         modifier = Modifier
@@ -30,7 +32,9 @@ fun CatalogItemCard(
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp) // Flat look
     ) {
-        Column {
+        // 🚀 NEW: We make the entire inside of the card clickable for the ripple effect
+        Column(modifier = Modifier.clickable { onClick() }) {
+
             // 🖼️ The Image Area (Using a sleek gradient placeholder for now)
             Box(
                 modifier = Modifier

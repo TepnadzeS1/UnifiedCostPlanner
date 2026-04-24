@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
@@ -13,12 +14,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-// 🚀 This is the new import for your Catalog!
+// 🚀 Imports
 import com.sandro.unifiedcostplanner.features.catalog.presentation.CatalogScreen
 import com.sandro.unifiedcostplanner.features.planner.presentation.components.MainBottomBar
 import com.sandro.unifiedcostplanner.features.planner.presentation.create_plan.CreatePlanScreen
 import com.sandro.unifiedcostplanner.features.planner.presentation.plan_detail.PlanDetailScreen
 import com.sandro.unifiedcostplanner.features.planner.presentation.plan_list.PlanListScreen
+import com.sandro.unifiedcostplanner.features.search.presentation.SearchScreen
 import com.sandro.unifiedcostplanner.ui.theme.UnifiedCostPlannerTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -37,7 +39,9 @@ class MainActivity : ComponentActivity() {
                     NavHost(
                         navController = navController,
                         startDestination = BottomNavItem.Plans.route,
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .consumeWindowInsets(innerPadding)
                     ) {
                         // 1. List Screen
                         composable(BottomNavItem.Plans.route) {
@@ -69,9 +73,14 @@ class MainActivity : ComponentActivity() {
                             CreatePlanScreen(onNavigateBack = { navController.popBackStack() })
                         }
 
-                        // 🚀 4. NEW: Catalog Screen
+                        // 4. Catalog Screen
                         composable(BottomNavItem.Catalog.route) {
                             CatalogScreen()
+                        }
+
+                        // 5. Search Screen
+                        composable(BottomNavItem.Search.route) {
+                            SearchScreen()
                         }
                     }
                 }

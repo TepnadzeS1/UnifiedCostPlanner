@@ -1,147 +1,154 @@
 package com.sandro.unifiedcostplanner.features.catalog.presentation
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.sandro.unifiedcostplanner.features.catalog.presentation.components.CatalogItemCard
+import com.sandro.unifiedcostplanner.features.catalog.presentation.components.CatalogItemSheet
+import com.sandro.unifiedcostplanner.features.catalog.presentation.viewmodel.CatalogViewModel
+import com.sandro.unifiedcostplanner.ui.components.UnifiedTopBar
 import com.sandro.unifiedcostplanner.ui.theme.PrimaryNavy
 
-@Composable
-fun CatalogScreen() {
-    val backgroundColor = Color(0xFFF8F9FA)
+data class PendingCartItem(val name: String, val category: String, val unitPrice: Double, val quantity: Int)
 
-    // State for the filter chips
+@Composable
+fun CatalogScreen(
+    viewModel: CatalogViewModel = hiltViewModel()
+) {
+    val plans by viewModel.plans.collectAsState()
+    var selectedItemForSheet by remember { mutableStateOf<Triple<String, String, Double>?>(null) }
+    var pendingCartItem by remember { mutableStateOf<PendingCartItem?>(null) }
     val filters = listOf("All Items", "Hotels", "Dining", "Services")
     var selectedFilter by remember { mutableStateOf("All Items") }
 
     Scaffold(
-        containerColor = backgroundColor
+        containerColor = Color(0xFFF8F9FA),
+        topBar = {
+            Column(modifier = Modifier.padding(horizontal = 20.dp).padding(top = 16.dp)) {
+                UnifiedTopBar()
+                Spacer(modifier = Modifier.height(32.dp))
+                Text("Local Catalog", fontSize = 32.sp, fontWeight = FontWeight.Black, color = Color(0xFF1A1A1A))
+                Text("Explore curated services and amenities in your area.", fontSize = 14.sp, color = Color.Gray)
+                Spacer(modifier = Modifier.height(24.dp))
+                FilterChips(filters, selectedFilter) { selectedFilter = it }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+        }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
+        LazyColumn(
+            modifier = Modifier.fillMaxSize().padding(paddingValues),
+            contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // 1. Top Bar (Matches your Figma exactly)
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.Menu, contentDescription = "Menu", tint = PrimaryNavy)
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Text(
-                        text = "Unified Cost Planner",
-                        color = PrimaryNavy,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp
-                    )
-                }
-
-                Surface(
-                    shape = CircleShape,
-                    color = Color(0xFFEEEEEE),
-                    modifier = Modifier.size(36.dp)
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Text("UP", color = Color.DarkGray, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // 2. Screen Header
-            Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-                Text(
-                    text = "Local Catalog",
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.Black,
-                    color = Color(0xFF1A1A1A)
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "Explore curated services and amenities in your area.",
-                    fontSize = 14.sp,
-                    color = Color.Gray
+            item {
+                CatalogItemCard(
+                    title = "The Grand Horizon", subtitle = "5-Star Accommodation", price = 350.0, unit = "/night", isFeatured = true,
+                    onClick = { selectedItemForSheet = Triple("The Grand Horizon", "Accommodation", 350.0) }
                 )
             }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // 3. Filter Chips
-            LazyRow(
-                contentPadding = PaddingValues(horizontal = 20.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(filters) { filter ->
-                    val isSelected = filter == selectedFilter
-                    Surface(
-                        color = if (isSelected) PrimaryNavy else Color(0xFFEEEEEE),
-                        shape = RoundedCornerShape(20.dp),
-                        onClick = { selectedFilter = filter }
-                    ) {
-                        Text(
-                            text = filter,
-                            color = if (isSelected) Color.White else Color.DarkGray,
-                            fontSize = 13.sp,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                        )
-                    }
-                }
+            item {
+                CatalogItemCard(
+                    title = "Ivy Boutique Inn", subtitle = "Charming Local Stay", price = 180.0, unit = "/night",
+                    onClick = { selectedItemForSheet = Triple("Ivy Boutique Inn", "Accommodation", 180.0) }
+                )
             }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // 4. The Catalog List (Dummy Data for now)
-            LazyColumn(
-                contentPadding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 80.dp)
-            ) {
-                item {
-                    CatalogItemCard(
-                        title = "The Grand Horizon",
-                        subtitle = "5-Star Accommodation",
-                        price = 350.0,
-                        unit = "/night",
-                        isFeatured = true
-                    )
-                }
-                item {
-                    CatalogItemCard(
-                        title = "Ivy Boutique Inn",
-                        subtitle = "Charming Local Stay",
-                        price = 180.0,
-                        unit = "/night"
-                    )
-                }
-                item {
-                    CatalogItemCard(
-                        title = "Apex Suites",
-                        subtitle = "Business District",
-                        price = 220.0,
-                        unit = "/night"
-                    )
-                }
+            item {
+                CatalogItemCard(
+                    title = "Apex Suites", subtitle = "Business District", price = 220.0, unit = "/night",
+                    onClick = { selectedItemForSheet = Triple("Apex Suites", "Accommodation", 220.0) }
+                )
             }
         }
     }
+
+    selectedItemForSheet?.let { item ->
+        CatalogItemSheet(
+            title = item.first, category = item.second, unitPrice = item.third,
+            onDismiss = { selectedItemForSheet = null },
+            onAddToCart = { quantity, _ ->
+                selectedItemForSheet = null
+                pendingCartItem = PendingCartItem(item.first, item.second, item.third, quantity)
+            }
+        )
+    }
+
+    pendingCartItem?.let { cartItem ->
+        PlanSelectorDialog(
+            cartItem = cartItem,
+            plans = plans,
+            onDismiss = { pendingCartItem = null },
+            onPlanSelected = { planId ->
+                viewModel.addCatalogItemToPlan(planId, cartItem.name, cartItem.unitPrice, cartItem.quantity, cartItem.category)
+                pendingCartItem = null
+            }
+        )
+    }
+}
+
+@Composable
+private fun FilterChips(filters: List<String>, selected: String, onSelect: (String) -> Unit) {
+    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        items(filters.size) { index ->
+            val filter = filters[index]
+            val isSelected = filter == selected
+            FilterChip(
+                selected = isSelected,
+                onClick = { onSelect(filter) },
+                label = { Text(filter) },
+                colors = FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = PrimaryNavy,
+                    selectedLabelColor = Color.White,
+                    containerColor = Color(0xFFEEEEEE),
+                    labelColor = Color.Gray
+                ),
+                border = null,
+                shape = RoundedCornerShape(20.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun PlanSelectorDialog(
+    cartItem: PendingCartItem,
+    plans: List<com.sandro.unifiedcostplanner.features.planner.domain.model.Plan>,
+    onDismiss: () -> Unit,
+    onPlanSelected: (String) -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Select a Plan", fontWeight = FontWeight.Bold, color = PrimaryNavy) },
+        text = {
+            if (plans.isEmpty()) {
+                Text("You don't have any plans yet. Go to the Plans tab to create one first!")
+            } else {
+                Column {
+                    Text("Where should we add ${cartItem.name}?", color = Color.Gray, fontSize = 14.sp)
+                    Spacer(modifier = Modifier.height(16.dp))
+                    plans.forEach { plan ->
+                        Surface(
+                            color = Color(0xFFF5F5F5),
+                            shape = RoundedCornerShape(12.dp),
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp).clickable { onPlanSelected(plan.id) }
+                        ) {
+                            Text(plan.title, modifier = Modifier.padding(16.dp), fontWeight = FontWeight.Bold, color = Color(0xFF1A1A1A))
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = { TextButton(onClick = onDismiss) { Text("Cancel", color = Color.Gray) } },
+        containerColor = Color.White
+    )
 }
