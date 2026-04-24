@@ -2,15 +2,18 @@ package com.sandro.unifiedcostplanner.features.planner.presentation.plan_list.vi
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sandro.unifiedcostplanner.features.planner.domain.repository.PlannerRepository
 import com.sandro.unifiedcostplanner.features.planner.domain.usecase.GetPlansUseCase
 import com.sandro.unifiedcostplanner.features.planner.presentation.plan_list.state.PlanListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class PlanListViewModel @Inject constructor(
-    private val getPlansUseCase: GetPlansUseCase
+    private val getPlansUseCase: GetPlansUseCase,
+    private val repository: PlannerRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PlanListUiState())
@@ -34,5 +37,11 @@ class PlanListViewModel @Inject constructor(
                 _state.update { it.copy(isLoading = false, errorMessage = error.message) }
             }
             .launchIn(viewModelScope)
+    }
+
+    fun deletePlan(planId: String) {
+        viewModelScope.launch {
+            repository.deletePlan(planId)
+        }
     }
 }

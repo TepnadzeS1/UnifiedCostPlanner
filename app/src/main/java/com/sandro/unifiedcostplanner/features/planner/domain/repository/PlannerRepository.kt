@@ -15,4 +15,13 @@ interface PlannerRepository {
     suspend fun addItemToPlan(planId: String, item: PlannerItem)
 
     suspend fun deletePlan(planId: String)
+    suspend fun deleteItem(itemId: String)
+    suspend fun addExpenseToPlan(
+        planId: String,
+        name: String,
+        unitPrice: Double,
+        quantity: Int,
+        notes: String,
+        category: String
+    )
 }

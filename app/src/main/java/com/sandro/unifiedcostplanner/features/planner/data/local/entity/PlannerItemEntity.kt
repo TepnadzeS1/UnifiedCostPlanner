@@ -7,12 +7,14 @@ import com.sandro.unifiedcostplanner.features.planner.domain.model.SourceType
 @Entity(tableName = "planner_items")
 data class PlannerItemEntity(
     @PrimaryKey val id: String,
-    val planId: String, // Foreign key linking to the Plan
+    val planId: String, // Required for Room Relations
     val name: String,
     val quantity: Int,
     val unitPrice: Double,
     val currency: String,
-    val source: SourceType, // We will handle this with a TypeConverter
+    val source: String, // Store the Enum as a String in the DB
     val imageUrl: String?,
-    val externalUrl: String?
+    val externalUrl: String?,
+    val notes: String?,
+    val subtotal: Double// Added this so your Bottom Sheet notes don't get lost!
 )

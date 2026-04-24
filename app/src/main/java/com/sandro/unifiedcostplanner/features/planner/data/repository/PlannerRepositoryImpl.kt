@@ -1,6 +1,7 @@
 package com.sandro.unifiedcostplanner.features.planner.data.repository
 
 import com.sandro.unifiedcostplanner.features.planner.data.local.dao.PlanDao
+import com.sandro.unifiedcostplanner.features.planner.data.local.entity.PlannerItemEntity
 import com.sandro.unifiedcostplanner.features.planner.data.mapper.toDomain
 import com.sandro.unifiedcostplanner.features.planner.data.mapper.toEntity
 import com.sandro.unifiedcostplanner.features.planner.domain.model.Plan
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import java.util.UUID
 import javax.inject.Inject
 
 class PlannerRepositoryImpl @Inject constructor(
@@ -22,8 +24,6 @@ class PlannerRepositoryImpl @Inject constructor(
         return planDao.getAllPlansWithItems()
             .map { list ->
                 list.map { planWithItems ->
-                    // Look! No more database queries inside this loop.
-                    // All the data is already here in 'planWithItems'.
                     planWithItems.plan.toDomain(planWithItems.items)
                 }
             }
@@ -47,5 +47,38 @@ class PlannerRepositoryImpl @Inject constructor(
 
     override suspend fun deletePlan(planId: String) = withContext(Dispatchers.IO) {
         planDao.deletePlan(planId)
+    }
+
+    override suspend fun deleteItem(itemId: String) = withContext(Dispatchers.IO) {
+        planDao.deleteItem(itemId)
+    }
+
+    override suspend fun addExpenseToPlan(
+        planId: String,
+        name: String,
+        unitPrice: Double,
+        quantity: Int,
+        notes: String,
+        category: String
+    ) = withContext(Dispatchers.IO) {
+
+        // 1. Create the database entity (Matches your UPDATED Entity exactly!)
+        val newItem = PlannerItemEntity(
+            id = UUID.randomUUID().toString(),
+            planId = planId,
+            name = name,
+            quantity = quantity,
+            unitPrice = unitPrice,
+            currency = "GEL", // Default from your domain model
+            source = category, // The category from the bottom sheet
+            imageUrl = null,
+            externalUrl = null,
+            notes = notes,
+            subtotal = unitPrice * quantity
+        )
+
+        // 2. Save it to Room
+        planDao.insertItem(newItem)
+
     }
 }

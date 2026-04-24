@@ -10,7 +10,7 @@ import com.sandro.unifiedcostplanner.features.planner.data.local.entity.PlannerI
 
 @Database(
     entities = [PlanEntity::class, PlannerItemEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(Converters::class) // Tell Room how to handle our Enum

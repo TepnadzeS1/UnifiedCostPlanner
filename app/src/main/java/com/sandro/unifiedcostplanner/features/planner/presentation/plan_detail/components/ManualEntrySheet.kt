@@ -34,8 +34,9 @@ fun ManualEntrySheet(
     val categories = listOf("Equipment", "Software", "Office Supplies", "Services")
     var selectedCategory by remember { mutableStateOf("Office Supplies") }
 
-    // Calculate Estimated Total dynamically
-    val price = priceInput.toDoubleOrNull() ?: 0.0
+    // 🚀 FIX 1: Clean the input so accidental commas or $ signs don't break the math
+    val cleanPrice = priceInput.replace("$", "").replace(",", "").trim()
+    val price = cleanPrice.toDoubleOrNull() ?: 0.0
     val quantity = quantityInput.toIntOrNull() ?: 1
     val estimatedTotal = price * quantity
 
@@ -206,16 +207,23 @@ fun ManualEntrySheet(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // --- ADD BUTTON ---
+            // 🚀 FIX 2: Validate the form and visually disable the button if it's not ready
+            val isFormValid = itemName.isNotBlank() && price > 0
+
             Button(
                 onClick = {
-                    if (itemName.isNotBlank() && price > 0) {
+                    if (isFormValid) {
                         onAddExpense(itemName, estimatedTotal, quantity, notes, selectedCategory)
                     }
                 },
+                enabled = isFormValid, // Will disable clicks if missing data
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = PrimaryNavy)
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = PrimaryNavy,
+                    disabledContainerColor = Color.LightGray, // Turns gray when disabled
+                    disabledContentColor = Color.DarkGray
+                )
             ) {
                 Text("Add to Plan", fontSize = 16.sp, fontWeight = FontWeight.Bold)
             }

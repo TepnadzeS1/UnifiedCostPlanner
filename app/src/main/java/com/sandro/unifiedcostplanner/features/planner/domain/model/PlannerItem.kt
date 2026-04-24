@@ -10,8 +10,8 @@ data class PlannerItem(
     val currency: String = "GEL",
     val source: SourceType,
     val imageUrl: String? = null,
-    val externalUrl: String? = null
+    val externalUrl: String? = null,
+    val notes: String? = null
 ) {
-    // Business Rule: Subtotal is always Quantity * Price
     val subtotal: Double get() = quantity * unitPrice
 }

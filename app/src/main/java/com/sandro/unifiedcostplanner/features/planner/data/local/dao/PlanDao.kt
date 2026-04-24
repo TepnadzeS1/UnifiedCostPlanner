@@ -17,17 +17,23 @@ interface PlanDao {
     fun getAllPlans(): Flow<List<PlanEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPlan(plan: PlanEntity)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertItem(item: PlannerItemEntity)
 
     @Query("SELECT * FROM planner_items WHERE planId = :planId")
     suspend fun getItemsForPlan(planId: String): List<PlannerItemEntity>
 
+    @Query("DELETE FROM planner_items WHERE id = :itemId")
+    suspend fun deleteItem(itemId: String)
+
     @Query("DELETE FROM plans WHERE id = :planId")
     suspend fun deletePlan(planId: String)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPlannerItem(item: PlannerItemEntity)
+
     @Query("SELECT * FROM plans WHERE id = :id")
     suspend fun getPlanById(id: String): PlanEntity?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPlan(plan: PlanEntity)
 }

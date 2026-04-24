@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.sandro.unifiedcostplanner.features.planner.presentation.plan_detail.components.SwipeToDeleteContainer
 import com.sandro.unifiedcostplanner.features.planner.presentation.plan_list.components.PlanCard
 import com.sandro.unifiedcostplanner.features.planner.presentation.plan_list.viewmodel.PlanListViewModel
 import com.sandro.unifiedcostplanner.ui.theme.BackgroundLight
@@ -49,10 +50,15 @@ fun PlanListScreen(
         ) {
             // 🚀 THE KEY FIX: Tells Compose to track items by ID
             items(items = state.plans, key = { it.id }) { plan ->
-                PlanCard(
-                    plan = plan,
-                    onClick = { onNavigateToDetails(plan.id) }
-                )
+                SwipeToDeleteContainer(
+                    item = plan,
+                    onDelete = { viewModel.deletePlan(plan.id) }
+                ) {
+                    PlanCard(
+                        plan = plan,
+                        onClick = { onNavigateToDetails(plan.id) }
+                    )
+                }
             }
         }
     }

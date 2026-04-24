@@ -7,9 +7,10 @@ import androidx.room.PrimaryKey
 data class PlanEntity(
     @PrimaryKey val id: String,
     val title: String,
-    val description: String?,
+    val description: String,
     val category: String,
-    val startDate: Long?,
-    val endDate: Long?,
-    val createdAt: Long
+    val startDate: Long,
+    val endDate: Long,
+    val createdAt: Long,
+    val totalCost: Double
 )
