@@ -13,6 +13,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+// 🚀 This is the new import for your Catalog!
+import com.sandro.unifiedcostplanner.features.catalog.presentation.CatalogScreen
 import com.sandro.unifiedcostplanner.features.planner.presentation.components.MainBottomBar
 import com.sandro.unifiedcostplanner.features.planner.presentation.create_plan.CreatePlanScreen
 import com.sandro.unifiedcostplanner.features.planner.presentation.plan_detail.PlanDetailScreen
@@ -54,7 +56,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        // 2. Details Screen (Previously missing)
+                        // 2. Details Screen
                         composable(
                             route = "plan_details/{planId}",
                             arguments = listOf(navArgument("planId") { type = NavType.StringType })
@@ -65,6 +67,11 @@ class MainActivity : ComponentActivity() {
                         // 3. Create Screen
                         composable("create_plan") {
                             CreatePlanScreen(onNavigateBack = { navController.popBackStack() })
+                        }
+
+                        // 🚀 4. NEW: Catalog Screen
+                        composable(BottomNavItem.Catalog.route) {
+                            CatalogScreen()
                         }
                     }
                 }
