@@ -23,7 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.sandro.unifiedcostplanner.features.catalog.presentation.components.CatalogItemSheet
 import com.sandro.unifiedcostplanner.features.search.presentation.components.SearchResultCard
 import com.sandro.unifiedcostplanner.features.search.presentation.viewmodel.SearchViewModel
-import com.sandro.unifiedcostplanner.ui.theme.PrimaryNavy
+import com.sandro.unifiedcostplanner.ui.components.UnifiedTopBar
 
 // Helper class for the cart
 data class PendingExternalItem(val name: String, val platform: String, val unitPrice: Double, val quantity: Int)
@@ -33,7 +33,12 @@ data class PendingExternalItem(val name: String, val platform: String, val unitP
 fun SearchScreen(
     viewModel: SearchViewModel = hiltViewModel()
 ) {
-    val backgroundColor = Color(0xFFF8F9FA)
+    val backgroundColor = MaterialTheme.colorScheme.background
+    val surfaceVariantColor = MaterialTheme.colorScheme.surfaceVariant
+    val textColor = MaterialTheme.colorScheme.onBackground
+    val secondaryTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val primaryColor = MaterialTheme.colorScheme.primary
+
     var searchQuery by remember { mutableStateOf("Vintage Audio") }
     val filters = listOf("All Results", "Buy It Now", "Auction", "Condition")
     var selectedFilter by remember { mutableStateOf("All Results") }
@@ -53,19 +58,8 @@ fun SearchScreen(
                 .padding(top = 8.dp)
         ) {
             // 1. Top Bar
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.Menu, contentDescription = "Menu", tint = PrimaryNavy)
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Text("Unified Cost Planner", color = PrimaryNavy, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                }
-                Surface(shape = CircleShape, color = Color(0xFFEEEEEE), modifier = Modifier.size(36.dp)) {
-                    Box(contentAlignment = Alignment.Center) { Text("UP", color = Color.DarkGray, fontSize = 12.sp, fontWeight = FontWeight.Bold) }
-                }
+            Box(modifier = Modifier.padding(horizontal = 20.dp)) {
+                UnifiedTopBar()
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -77,11 +71,15 @@ fun SearchScreen(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color(0xFFEEEEEE), unfocusedContainerColor = Color(0xFFEEEEEE),
-                    focusedIndicatorColor = Color.Transparent, unfocusedIndicatorColor = Color.Transparent
+                    focusedContainerColor = surfaceVariantColor,
+                    unfocusedContainerColor = surfaceVariantColor,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedTextColor = textColor,
+                    unfocusedTextColor = textColor
                 ),
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = Color.Gray, modifier = Modifier.size(20.dp)) },
-                trailingIcon = { Icon(Icons.Default.Tune, contentDescription = "Filters", tint = Color.Gray, modifier = Modifier.size(20.dp)) },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = secondaryTextColor, modifier = Modifier.size(20.dp)) },
+                trailingIcon = { Icon(Icons.Default.Tune, contentDescription = "Filters", tint = secondaryTextColor, modifier = Modifier.size(20.dp)) },
                 singleLine = true
             )
 
@@ -92,12 +90,12 @@ fun SearchScreen(
                 items(filters) { filter ->
                     val isSelected = filter == selectedFilter
                     Surface(
-                        color = if (isSelected) PrimaryNavy else Color(0xFFEEEEEE),
+                        color = if (isSelected) primaryColor else surfaceVariantColor,
                         shape = RoundedCornerShape(8.dp),
                         onClick = { selectedFilter = filter }
                     ) {
                         Text(
-                            text = filter, color = if (isSelected) Color.White else Color.DarkGray,
+                            text = filter, color = if (isSelected) MaterialTheme.colorScheme.onPrimary else secondaryTextColor,
                             fontSize = 12.sp, fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
                         )
@@ -113,10 +111,10 @@ fun SearchScreen(
                 horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Bottom
             ) {
                 Column {
-                    Text("Search Results", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1A1A1A))
-                    Text("Found 42 items for \"$searchQuery\"", fontSize = 11.sp, color = Color.Gray)
+                    Text("Search Results", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = textColor)
+                    Text("Found 42 items for \"$searchQuery\"", fontSize = 11.sp, color = secondaryTextColor)
                 }
-                Text("Sort: Best Match ▾", fontSize = 11.sp, color = Color.DarkGray)
+                Text("Sort: Best Match ▾", fontSize = 11.sp, color = secondaryTextColor)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -127,8 +125,7 @@ fun SearchScreen(
                     SearchResultCard(
                         title = "Vintage Pioneer SX-780 Stereo Receiver", condition = "Pre-Owned",
                         price = 450.00, shippingCost = 35.00, watchers = 2, rating = 4.8, reviews = 124, isTopRated = true,
-                        // 🚀 TRIGGERS THE SHEET
-                        onClick = { selectedItemForSheet = Triple("Vintage Pioneer SX-780", "eBay", 485.00) } // Price + Shipping combined for simplicity
+                        onClick = { selectedItemForSheet = Triple("Vintage Pioneer SX-780", "eBay", 485.00) }
                     )
                 }
                 item {
@@ -142,7 +139,7 @@ fun SearchScreen(
         }
     }
 
-    // 🚀 THE BOTTOM SHEET (Reusing your awesome Catalog sheet!)
+    // 🚀 THE BOTTOM SHEET
     selectedItemForSheet?.let { item ->
         CatalogItemSheet(
             title = item.first,
@@ -160,19 +157,18 @@ fun SearchScreen(
     pendingCartItem?.let { cartItem ->
         AlertDialog(
             onDismissRequest = { pendingCartItem = null },
-            title = { Text("Select a Plan", fontWeight = FontWeight.Bold, color = PrimaryNavy) },
+            title = { Text("Select a Plan", fontWeight = FontWeight.Bold, color = primaryColor) },
             text = {
                 if (plans.isEmpty()) {
-                    Text("You don't have any plans yet. Go to the Plans tab to create one first!")
+                    Text("You don't have any plans yet. Go to the Plans tab to create one first!", color = textColor)
                 } else {
                     Column {
-                        Text("Where should we add ${cartItem.name}?", color = Color.Gray, fontSize = 14.sp)
+                        Text("Where should we add ${cartItem.name}?", color = secondaryTextColor, fontSize = 14.sp)
                         Spacer(modifier = Modifier.height(16.dp))
                         plans.forEach { plan ->
                             Surface(
-                                color = Color(0xFFF5F5F5), shape = RoundedCornerShape(12.dp),
+                                color = surfaceVariantColor, shape = RoundedCornerShape(12.dp),
                                 modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp).clickable {
-                                    // 🚀 SAVE TO DB
                                     viewModel.addExternalItemToPlan(
                                         planId = plan.id,
                                         name = cartItem.name,
@@ -182,13 +178,13 @@ fun SearchScreen(
                                     )
                                     pendingCartItem = null
                                 }
-                            ) { Text(text = plan.title, modifier = Modifier.padding(16.dp), fontWeight = FontWeight.Bold, color = Color(0xFF1A1A1A)) }
+                            ) { Text(text = plan.title, modifier = Modifier.padding(16.dp), fontWeight = FontWeight.Bold, color = textColor) }
                         }
                     }
                 }
             },
-            confirmButton = { TextButton(onClick = { pendingCartItem = null }) { Text("Cancel", color = Color.Gray) } },
-            containerColor = Color.White
+            confirmButton = { TextButton(onClick = { pendingCartItem = null }) { Text("Cancel", color = secondaryTextColor) } },
+            containerColor = MaterialTheme.colorScheme.surface
         )
     }
 }

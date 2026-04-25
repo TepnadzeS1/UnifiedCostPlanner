@@ -15,3 +15,10 @@ val ChipBackground = Color(0xFFF0F0F0)
 val ProfileGray = Color(0xFFE0E0E0)
 
 val ErrorRed = Color(0xFFD32F2F) // Matching the delete button in Figma
+
+// --- Dark Mode Colors ---
+val BackgroundDark = Color(0xFF0F1218)
+val SurfaceDark = Color(0xFF1B1F2A)
+val TextPrimaryDark = Color(0xFFF0F4F8) // Even lighter/brighter than before
+val TextSecondaryDark = Color(0xFFC0CCD9) // Light gray for secondary text
+val PrimaryNavyDark = Color(0xFF3F51B5) // Significantly lighter navy for Dark Mode contrast

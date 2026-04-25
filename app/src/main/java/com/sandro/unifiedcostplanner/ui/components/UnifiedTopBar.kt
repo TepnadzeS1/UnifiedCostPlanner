@@ -5,6 +5,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,14 +15,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.sandro.unifiedcostplanner.ui.theme.PrimaryNavy
-import com.sandro.unifiedcostplanner.ui.theme.ProfileGray
 
 @Composable
 fun UnifiedTopBar(
     modifier: Modifier = Modifier,
     profileContent: @Composable () -> Unit = {
-        Text("UP", color = Color.DarkGray, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+        Text("UP", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, fontWeight = FontWeight.Bold)
     }
 ) {
     Row(
@@ -31,11 +30,11 @@ fun UnifiedTopBar(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Default.Menu, contentDescription = "Menu", tint = PrimaryNavy)
+            Icon(Icons.Default.Menu, contentDescription = "Menu", tint = MaterialTheme.colorScheme.primary)
             Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = "Unified Cost Planner",
-                color = PrimaryNavy,
+                color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp
             )
@@ -43,7 +42,7 @@ fun UnifiedTopBar(
 
         Surface(
             shape = CircleShape,
-            color = ProfileGray,
+            color = MaterialTheme.colorScheme.surfaceVariant,
             modifier = Modifier.size(36.dp)
         ) {
             Box(contentAlignment = Alignment.Center) {

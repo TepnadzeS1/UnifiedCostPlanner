@@ -29,7 +29,6 @@ import com.sandro.unifiedcostplanner.features.planner.presentation.plan_detail.c
 import com.sandro.unifiedcostplanner.features.planner.presentation.plan_detail.components.ManualEntrySheet
 import com.sandro.unifiedcostplanner.features.planner.presentation.plan_detail.components.SwipeToDeleteContainer
 import com.sandro.unifiedcostplanner.features.planner.presentation.plan_list.viewmodel.PlanDetailViewModel
-import com.sandro.unifiedcostplanner.ui.theme.PrimaryNavy
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -40,14 +39,17 @@ fun PlanDetailScreen(
 ) {
     // 🧠 The Engine
     val plan by viewModel.state.collectAsState()
-    val backgroundColor = Color(0xFFF8F9FA)
+    val backgroundColor = MaterialTheme.colorScheme.background
+    val textColor = MaterialTheme.colorScheme.onBackground
+    val secondaryTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val primaryColor = MaterialTheme.colorScheme.primary
 
     // State to control the bottom sheet
     var showAddSheet by remember { mutableStateOf(false) }
 
     if (plan == null) {
         Box(modifier = Modifier.fillMaxSize().background(backgroundColor), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator(color = PrimaryNavy)
+            CircularProgressIndicator(color = primaryColor)
         }
         return
     }
@@ -62,14 +64,14 @@ fun PlanDetailScreen(
         }
     }
 
-    // 🏗️ The Scaffold added back to hold the FAB!
+    // 🏗️ The Scaffold
     Scaffold(
         containerColor = backgroundColor,
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { showAddSheet = true }, // Opens the sheet
-                containerColor = PrimaryNavy,
-                contentColor = Color.White
+                onClick = { showAddSheet = true },
+                containerColor = primaryColor,
+                contentColor = MaterialTheme.colorScheme.onPrimary
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add Expense")
             }
@@ -79,24 +81,24 @@ fun PlanDetailScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues) // Scaffold safe-padding
+                .padding(paddingValues)
         ) {
             item {
                 Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-                    // 1. Custom Top Bar (Figma Style)
+                    // 1. Custom Top Bar
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             IconButton(onClick = onNavigateBack, modifier = Modifier.size(24.dp)) {
-                                Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = PrimaryNavy)
+                                Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = primaryColor)
                             }
                             Spacer(modifier = Modifier.width(12.dp))
                             Text(
                                 text = "Unified Cost\nPlanner",
-                                color = PrimaryNavy,
+                                color = primaryColor,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 16.sp,
                                 lineHeight = 18.sp
@@ -104,10 +106,10 @@ fun PlanDetailScreen(
                         }
 
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.Edit, contentDescription = "Edit", tint = PrimaryNavy, modifier = Modifier.size(20.dp))
+                            Icon(Icons.Default.Edit, contentDescription = "Edit", tint = primaryColor, modifier = Modifier.size(20.dp))
                             Spacer(modifier = Modifier.width(16.dp))
-                            Surface(shape = CircleShape, color = PrimaryNavy, modifier = Modifier.size(32.dp)) {
-                                Icon(Icons.Default.Person, contentDescription = "Profile", tint = Color.White, modifier = Modifier.padding(6.dp))
+                            Surface(shape = CircleShape, color = primaryColor, modifier = Modifier.size(32.dp)) {
+                                Icon(Icons.Default.Person, contentDescription = "Profile", tint = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.padding(6.dp))
                             }
                         }
                     }
@@ -124,40 +126,40 @@ fun PlanDetailScreen(
                             text = plan!!.title,
                             fontSize = 32.sp,
                             fontWeight = FontWeight.Black,
-                            color = Color(0xFF1A1A1A),
+                            color = textColor,
                             lineHeight = 36.sp,
                             modifier = Modifier.weight(1f)
                         )
 
                         // "In Progress" Badge
                         Surface(
-                            color = Color(0xFFE8F0EA),
+                            color = MaterialTheme.colorScheme.tertiaryContainer,
                             shape = RoundedCornerShape(8.dp)
                         ) {
                             Row(modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
-                                Box(modifier = Modifier.size(6.dp).background(Color(0xFF2E7D32), CircleShape))
+                                Box(modifier = Modifier.size(6.dp).background(MaterialTheme.colorScheme.tertiary, CircleShape))
                                 Spacer(modifier = Modifier.width(6.dp))
-                                Text("In\nProgress", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1A1A1A))
+                                Text("In\nProgress", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onTertiaryContainer)
                             }
                         }
                     }
 
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = dateText, color = Color.Gray, fontSize = 12.sp)
+                    Text(text = dateText, color = secondaryTextColor, fontSize = 12.sp)
 
                     Spacer(modifier = Modifier.height(24.dp))
 
                     // 3. Total Cost (Real Math)
-                    Text(text = "TOTAL PROJECTED COST", color = Color.Gray, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                    Text(text = "TOTAL PROJECTED COST", color = secondaryTextColor, fontSize = 10.sp, fontWeight = FontWeight.Bold)
                     Text(
                         text = "$${String.format(Locale.US, "%.2f", plan!!.totalCost)}",
                         fontSize = 48.sp,
                         fontWeight = FontWeight.Black,
-                        color = PrimaryNavy
+                        color = primaryColor
                     )
 
                     Spacer(modifier = Modifier.height(32.dp))
-                    Text(text = "Expenses", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1A1A1A))
+                    Text(text = "Expenses", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = textColor)
                     Spacer(modifier = Modifier.height(8.dp))
                 }
             }
@@ -166,13 +168,13 @@ fun PlanDetailScreen(
             if (plan!!.items.isEmpty()) {
                 item {
                     Box(modifier = Modifier.fillMaxWidth().padding(top = 40.dp), contentAlignment = Alignment.Center) {
-                        Text("No expenses yet. Time to add some!", color = Color.Gray)
+                        Text("No expenses yet. Time to add some!", color = secondaryTextColor)
                     }
                 }
             } else {
                 items(
                     items = plan!!.items,
-                    key = { it.id } // Critical for smooth animations
+                    key = { it.id }
                 ) { item ->
                     SwipeToDeleteContainer(
                         item = item,
@@ -183,8 +185,8 @@ fun PlanDetailScreen(
                                 title = item.name,
                                 subtitle = "Manual Entry",
                                 tag = item.source.name,
-                                tagColor = Color.LightGray,
-                                iconBgColor = Color(0xFFEEEEEE),
+                                tagColor = MaterialTheme.colorScheme.secondaryContainer,
+                                iconBgColor = MaterialTheme.colorScheme.surfaceVariant,
                                 unitPrice = item.unitPrice,
                                 qty = item.quantity,
                                 subtotal = item.subtotal
@@ -204,13 +206,8 @@ fun PlanDetailScreen(
         ManualEntrySheet(
             onDismiss = { showAddSheet = false },
             onAddExpense = { name, totalCost, qty, notes, category ->
-                // 1. Hide the sheet
                 showAddSheet = false
-
-                // 2. Calculate unit price (since bottom sheet passes the total)
                 val unitPrice = if (qty > 0) totalCost / qty else totalCost
-
-                // 3. 🚀 SEND IT TO THE ENGINE!
                 viewModel.addExpense(
                     name = name,
                     unitPrice = unitPrice,

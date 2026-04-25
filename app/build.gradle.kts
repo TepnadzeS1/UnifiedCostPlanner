@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.text.google.fonts)
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
     ksp(libs.hilt.compiler)
 
     implementation(libs.androidx.room.runtime)

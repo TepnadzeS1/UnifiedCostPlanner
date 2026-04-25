@@ -3,6 +3,7 @@ package com.sandro.unifiedcostplanner.ui.theme
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
@@ -11,7 +12,21 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-// Using the Light Theme based on your Neutral #F5F5F5 background
+private val DarkColorScheme = darkColorScheme(
+    primary = PrimaryNavyDark,
+    secondary = SecondaryTeal,
+    tertiary = TertiaryGreen,
+    background = BackgroundDark,
+    surface = SurfaceDark,
+    onPrimary = Color.White,
+    onSecondary = Color.White,
+    onTertiary = Color.White,
+    onBackground = TextPrimaryDark,
+    onSurface = TextPrimaryDark,
+    onSurfaceVariant = TextSecondaryDark,
+    error = ErrorRed
+)
+
 private val LightColorScheme = lightColorScheme(
     primary = PrimaryNavy,
     secondary = SecondaryTeal,
@@ -23,6 +38,7 @@ private val LightColorScheme = lightColorScheme(
     onTertiary = Color.White,
     onBackground = TextPrimary,
     onSurface = TextPrimary,
+    onSurfaceVariant = TextSecondary,
     error = ErrorRed
 )
 
@@ -31,9 +47,7 @@ fun UnifiedCostPlannerTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    // For now, forcing the light scheme to match Figma exactly.
-    // We can add a dark mode variant later if needed.
-    val colorScheme = LightColorScheme
+    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
 
     val view = LocalView.current
     if (!view.isInEditMode) {
@@ -46,7 +60,7 @@ fun UnifiedCostPlannerTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography, // Uses your new Manrope/Inter fonts
+        typography = Typography,
         content = content
     )
 }

@@ -36,7 +36,7 @@ fun SearchResultCard(
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(modifier = Modifier.clickable { onClick() }.padding(16.dp)) {
@@ -47,7 +47,10 @@ fun SearchResultCard(
                     .height(140.dp)
                     .background(
                         brush = Brush.verticalGradient(
-                            colors = listOf(Color(0xFFE0E0E0), Color(0xFFBDBDBD))
+                            colors = listOf(
+                                MaterialTheme.colorScheme.surfaceVariant,
+                                MaterialTheme.colorScheme.outlineVariant
+                            )
                         ),
                         shape = RoundedCornerShape(8.dp)
                     )
@@ -55,7 +58,7 @@ fun SearchResultCard(
                 if (isTopRated) {
                     Text(
                         text = "TOP RATED PLUS",
-                        color = PrimaryNavy,
+                        color = MaterialTheme.colorScheme.primary,
                         fontSize = 9.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(8.dp)
@@ -70,11 +73,11 @@ fun SearchResultCard(
                 text = title,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1A1A1A),
+                color = MaterialTheme.colorScheme.onSurface,
                 lineHeight = 18.sp
             )
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = condition, fontSize = 11.sp, color = Color.Gray)
+            Text(text = condition, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
 
             Spacer(modifier = Modifier.height(4.dp))
 
@@ -84,12 +87,12 @@ fun SearchResultCard(
                     Icon(
                         Icons.Default.Star,
                         contentDescription = null,
-                        tint = if (index < rating.toInt()) Color(0xFFFFB300) else Color.LightGray,
+                        tint = if (index < rating.toInt()) Color(0xFFFFB300) else MaterialTheme.colorScheme.outlineVariant,
                         modifier = Modifier.size(12.dp)
                     )
                 }
                 Spacer(modifier = Modifier.width(4.dp))
-                Text("($reviews)", fontSize = 10.sp, color = Color.Gray)
+                Text("($reviews)", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -105,29 +108,29 @@ fun SearchResultCard(
                         text = "$${String.format(Locale.US, "%.2f", price)}",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Black,
-                        color = Color(0xFF1A1A1A)
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
                         text = "+$${String.format(Locale.US, "%.2f", shippingCost)} shipping",
                         fontSize = 10.sp,
-                        color = Color.Gray
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     if (watchers > 0) {
-                        Text(text = "$watchers watchers", fontSize = 10.sp, color = Color(0xFFD32F2F), fontWeight = FontWeight.Medium)
+                        Text(text = "$watchers watchers", fontSize = 10.sp, color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.Medium)
                     }
                 }
 
                 // Platform Badge
                 Surface(
-                    color = Color(0xFFEEEEEE),
+                    color = MaterialTheme.colorScheme.surfaceVariant,
                     shape = RoundedCornerShape(4.dp)
                 ) {
                     Text(
                         text = platform,
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.DarkGray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                     )
                 }

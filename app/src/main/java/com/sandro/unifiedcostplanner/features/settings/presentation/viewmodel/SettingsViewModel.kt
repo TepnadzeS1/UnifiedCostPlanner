@@ -3,15 +3,36 @@ package com.sandro.unifiedcostplanner.features.settings.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sandro.unifiedcostplanner.features.planner.domain.repository.PlannerRepository
+import com.sandro.unifiedcostplanner.features.settings.data.UserPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val repository: PlannerRepository
+    private val repository: PlannerRepository,
+    private val userPrefs: UserPreferencesRepository
 ) : ViewModel() {
+
+    val isDarkMode = userPrefs.isDarkMode.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+    val isNotificationsEnabled = userPrefs.isNotificationsEnabled.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
+    val selectedCurrency = userPrefs.selectedCurrency.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "GEL")
+
+    // 🚀 NEW: Functions to update preferences
+    fun toggleDarkMode(enabled: Boolean) = viewModelScope.launch { userPrefs.updateDarkMode(enabled) }
+    fun toggleNotifications(enabled: Boolean) = viewModelScope.launch { userPrefs.updateNotifications(enabled) }
+    fun updateCurrency(currency: String) = viewModelScope.launch { userPrefs.updateCurrency(currency) }
+
+    fun eraseAllPlans() {
+        viewModelScope.launch {
+            repository.getPlans().first().forEach { plan ->
+                repository.deletePlan(plan.id)
+            }
+        }
+    }
 
     fun generateCsvData(onCsvReady: (String) -> Unit) {
         viewModelScope.launch {

@@ -14,6 +14,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 // 🚀 Imports
 import com.sandro.unifiedcostplanner.features.catalog.presentation.CatalogScreen
 import com.sandro.unifiedcostplanner.features.planner.presentation.components.MainBottomBar
@@ -31,7 +34,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            UnifiedCostPlannerTheme {
+            val mainViewModel: MainViewModel = hiltViewModel()
+            val darkTheme by mainViewModel.isDarkMode.collectAsState()
+
+            UnifiedCostPlannerTheme(darkTheme = darkTheme) {
                 val navController = rememberNavController()
 
                 Scaffold(

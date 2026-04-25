@@ -2,7 +2,6 @@ package com.sandro.unifiedcostplanner.features.catalog.presentation
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,7 +17,6 @@ import com.sandro.unifiedcostplanner.features.catalog.presentation.components.Ca
 import com.sandro.unifiedcostplanner.features.catalog.presentation.components.CatalogItemSheet
 import com.sandro.unifiedcostplanner.features.catalog.presentation.viewmodel.CatalogViewModel
 import com.sandro.unifiedcostplanner.ui.components.UnifiedTopBar
-import com.sandro.unifiedcostplanner.ui.theme.PrimaryNavy
 
 data class PendingCartItem(val name: String, val category: String, val unitPrice: Double, val quantity: Int)
 
@@ -33,13 +31,13 @@ fun CatalogScreen(
     var selectedFilter by remember { mutableStateOf("All Items") }
 
     Scaffold(
-        containerColor = Color(0xFFF8F9FA),
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             Column(modifier = Modifier.padding(horizontal = 20.dp).padding(top = 16.dp)) {
                 UnifiedTopBar()
                 Spacer(modifier = Modifier.height(32.dp))
-                Text("Local Catalog", fontSize = 32.sp, fontWeight = FontWeight.Black, color = Color(0xFF1A1A1A))
-                Text("Explore curated services and amenities in your area.", fontSize = 14.sp, color = Color.Gray)
+                Text("Local Catalog", fontSize = 32.sp, fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.onBackground)
+                Text("Explore curated services and amenities in your area.", fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Spacer(modifier = Modifier.height(24.dp))
                 FilterChips(filters, selectedFilter) { selectedFilter = it }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -107,10 +105,10 @@ private fun FilterChips(filters: List<String>, selected: String, onSelect: (Stri
                 onClick = { onSelect(filter) },
                 label = { Text(filter) },
                 colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = PrimaryNavy,
-                    selectedLabelColor = Color.White,
-                    containerColor = Color(0xFFEEEEEE),
-                    labelColor = Color.Gray
+                    selectedContainerColor = MaterialTheme.colorScheme.primary,
+                    selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    labelColor = MaterialTheme.colorScheme.onSurfaceVariant
                 ),
                 border = null,
                 shape = RoundedCornerShape(20.dp)
@@ -128,27 +126,27 @@ private fun PlanSelectorDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Select a Plan", fontWeight = FontWeight.Bold, color = PrimaryNavy) },
+        title = { Text("Select a Plan", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary) },
         text = {
             if (plans.isEmpty()) {
-                Text("You don't have any plans yet. Go to the Plans tab to create one first!")
+                Text("You don't have any plans yet. Go to the Plans tab to create one first!", color = MaterialTheme.colorScheme.onSurface)
             } else {
                 Column {
-                    Text("Where should we add ${cartItem.name}?", color = Color.Gray, fontSize = 14.sp)
+                    Text("Where should we add ${cartItem.name}?", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp)
                     Spacer(modifier = Modifier.height(16.dp))
                     plans.forEach { plan ->
                         Surface(
-                            color = Color(0xFFF5F5F5),
+                            color = MaterialTheme.colorScheme.surfaceVariant,
                             shape = RoundedCornerShape(12.dp),
                             modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp).clickable { onPlanSelected(plan.id) }
                         ) {
-                            Text(plan.title, modifier = Modifier.padding(16.dp), fontWeight = FontWeight.Bold, color = Color(0xFF1A1A1A))
+                            Text(plan.title, modifier = Modifier.padding(16.dp), fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                 }
             }
         },
-        confirmButton = { TextButton(onClick = onDismiss) { Text("Cancel", color = Color.Gray) } },
-        containerColor = Color.White
+        confirmButton = { TextButton(onClick = onDismiss) { Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant) } },
+        containerColor = MaterialTheme.colorScheme.surface
     )
 }

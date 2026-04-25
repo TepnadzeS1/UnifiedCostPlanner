@@ -3,13 +3,11 @@ package com.sandro.unifiedcostplanner.features.planner.presentation.components
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.sandro.unifiedcostplanner.BottomNavItem
-import com.sandro.unifiedcostplanner.ui.theme.PrimaryNavy
 
 @Composable
 fun MainBottomBar(navController: NavController) {
@@ -21,7 +19,7 @@ fun MainBottomBar(navController: NavController) {
     )
 
     NavigationBar(
-        containerColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.surface,
         tonalElevation = 8.dp
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -42,11 +40,11 @@ fun MainBottomBar(navController: NavController) {
                 icon = { Icon(item.icon, contentDescription = item.title) },
                 label = { Text(text = item.title) },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = PrimaryNavy,
-                    selectedTextColor = PrimaryNavy,
-                    indicatorColor = PrimaryNavy.copy(alpha = 0.1f),
-                    unselectedIconColor = Color.Gray,
-                    unselectedTextColor = Color.Gray
+                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                    selectedTextColor = MaterialTheme.colorScheme.primary,
+                    indicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                 )
             )
         }

@@ -37,27 +37,34 @@ fun CatalogItemSheet(
     var quantity by remember { mutableStateOf(1) }
     val subtotal = unitPrice * quantity
 
-    val fieldBackground = Color(0xFFEEEEEE)
-    val textColor = Color(0xFF1A1A1A)
+    val surfaceColor = MaterialTheme.colorScheme.surface
+    val onSurfaceColor = MaterialTheme.colorScheme.onSurface
+    val surfaceVariantColor = MaterialTheme.colorScheme.surfaceVariant
+    val onSurfaceVariantColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val primaryColor = MaterialTheme.colorScheme.primary
+    val onPrimaryColor = MaterialTheme.colorScheme.onPrimary
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
-        containerColor = Color.White,
+        containerColor = surfaceColor,
         dragHandle = null
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 24.dp) // Bottom padding for the sheet
+                .padding(bottom = 24.dp)
         ) {
-            // 🖼️ The Hero Image Area (Gradient placeholder for now)
+            // 🖼️ The Hero Image Area
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp)
                     .background(
                         brush = Brush.verticalGradient(
-                            colors = listOf(Color(0xFF455A64), Color(0xFF263238))
+                            colors = listOf(
+                                MaterialTheme.colorScheme.secondaryContainer,
+                                MaterialTheme.colorScheme.tertiaryContainer
+                            )
                         )
                     )
             ) {
@@ -75,9 +82,9 @@ fun CatalogItemSheet(
 
             Column(modifier = Modifier.padding(24.dp)) {
                 // 📝 Title and Category
-                Text(text = title, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = textColor)
+                Text(text = title, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = onSurfaceColor)
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(text = "$category • SKU-${(1000..9999).random()}A", fontSize = 12.sp, color = Color.Gray)
+                Text(text = "$category • SKU-${(1000..9999).random()}A", fontSize = 12.sp, color = onSurfaceVariantColor)
 
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -87,13 +94,13 @@ fun CatalogItemSheet(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Unit Price", fontSize = 14.sp, color = Color.Gray)
-                    Surface(color = fieldBackground, shape = RoundedCornerShape(8.dp)) {
+                    Text("Unit Price", fontSize = 14.sp, color = onSurfaceVariantColor)
+                    Surface(color = surfaceVariantColor, shape = RoundedCornerShape(8.dp)) {
                         Text(
                             text = "$ ${String.format(Locale.US, "%.2f", unitPrice)}",
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                             fontWeight = FontWeight.Bold,
-                            color = textColor
+                            color = onSurfaceColor
                         )
                     }
                 }
@@ -106,15 +113,15 @@ fun CatalogItemSheet(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Quantity", fontSize = 14.sp, color = Color.Gray)
+                    Text("Quantity", fontSize = 14.sp, color = onSurfaceVariantColor)
 
-                    Surface(color = fieldBackground, shape = RoundedCornerShape(12.dp)) {
+                    Surface(color = surfaceVariantColor, shape = RoundedCornerShape(12.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             IconButton(
                                 onClick = { if (quantity > 1) quantity-- },
                                 modifier = Modifier.size(36.dp)
                             ) {
-                                Icon(Icons.Default.Remove, contentDescription = "Decrease", tint = textColor)
+                                Icon(Icons.Default.Remove, contentDescription = "Decrease", tint = onSurfaceColor)
                             }
 
                             Text(
@@ -122,14 +129,14 @@ fun CatalogItemSheet(
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.width(32.dp),
                                 textAlign = TextAlign.Center,
-                                color = textColor
+                                color = onSurfaceColor
                             )
 
                             IconButton(
                                 onClick = { quantity++ },
                                 modifier = Modifier.size(36.dp)
                             ) {
-                                Icon(Icons.Default.Add, contentDescription = "Increase", tint = textColor)
+                                Icon(Icons.Default.Add, contentDescription = "Increase", tint = onSurfaceColor)
                             }
                         }
                     }
@@ -143,12 +150,12 @@ fun CatalogItemSheet(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.Bottom
                 ) {
-                    Text("Subtotal", color = Color.Gray, fontSize = 14.sp)
+                    Text("Subtotal", color = onSurfaceVariantColor, fontSize = 14.sp)
                     Text(
                         text = "$${String.format(Locale.US, "%.2f", subtotal)}",
                         fontSize = 28.sp,
                         fontWeight = FontWeight.Black,
-                        color = PrimaryNavy
+                        color = primaryColor
                     )
                 }
 
@@ -164,7 +171,7 @@ fun CatalogItemSheet(
                         .fillMaxWidth()
                         .height(56.dp),
                     shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryNavy)
+                    colors = ButtonDefaults.buttonColors(containerColor = primaryColor, contentColor = onPrimaryColor)
                 ) {
                     Icon(Icons.Default.ShoppingCart, contentDescription = null, modifier = Modifier.size(20.dp))
                     Spacer(modifier = Modifier.width(8.dp))

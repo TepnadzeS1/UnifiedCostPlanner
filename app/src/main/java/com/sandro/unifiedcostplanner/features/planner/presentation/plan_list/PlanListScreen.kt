@@ -36,7 +36,7 @@ fun PlanListScreen(
     val state by viewModel.state.collectAsState()
 
     Scaffold(
-        containerColor = BackgroundLight,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             PlanListHeader()
         },
@@ -76,7 +76,7 @@ private fun PlanListHeader() {
             text = "Plans",
             fontSize = 32.sp,
             fontWeight = FontWeight.Black,
-            color = Color(0xFF1A1A1A)
+            color = MaterialTheme.colorScheme.onBackground
         )
         Spacer(modifier = Modifier.height(16.dp))
     }
@@ -131,7 +131,7 @@ private fun PlanListContent(
 private fun PlanListFAB(onClick: () -> Unit) {
     FloatingActionButton(
         onClick = onClick,
-        containerColor = SecondaryTeal,
+        containerColor = MaterialTheme.colorScheme.secondary,
         contentColor = Color.White,
         shape = RoundedCornerShape(16.dp)
     ) {

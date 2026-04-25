@@ -1,6 +1,5 @@
 package com.sandro.unifiedcostplanner.features.planner.presentation.create_plan
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -19,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sandro.unifiedcostplanner.features.planner.presentation.create_plan.viewmodel.CreatePlanViewModel
-import com.sandro.unifiedcostplanner.ui.theme.PrimaryNavy
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,10 +25,12 @@ fun CreatePlanScreen(
     onNavigateBack: () -> Unit,
     viewModel: CreatePlanViewModel = hiltViewModel()
 ) {
-    // 🎨 Premium UI Colors
-    val backgroundColor = Color(0xFFF8F9FA)
-    val fieldBackground = Color(0xFFEEEEEE)
-    val textColor = Color(0xFF1A1A1A)
+    // 🎨 Theme-Aware Colors
+    val backgroundColor = MaterialTheme.colorScheme.background
+    val surfaceColor = MaterialTheme.colorScheme.surface
+    val surfaceVariantColor = MaterialTheme.colorScheme.surfaceVariant
+    val textColor = MaterialTheme.colorScheme.onBackground
+    val primaryColor = MaterialTheme.colorScheme.primary
 
     // Optional: Add category chips for extra flair!
     val categories = listOf("General", "Operations", "Marketing", "Event", "Personal")
@@ -50,7 +50,7 @@ fun CreatePlanScreen(
             ) {
                 Surface(
                     shape = CircleShape,
-                    color = fieldBackground,
+                    color = surfaceVariantColor,
                     modifier = Modifier
                         .size(40.dp)
                         .clickable { onNavigateBack() }
@@ -58,12 +58,12 @@ fun CreatePlanScreen(
                     Icon(
                         Icons.Default.ArrowBack,
                         contentDescription = "Back",
-                        tint = PrimaryNavy,
+                        tint = primaryColor,
                         modifier = Modifier.padding(8.dp)
                     )
                 }
                 Spacer(modifier = Modifier.width(16.dp))
-                Text("Create New Plan", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = PrimaryNavy)
+                Text("Create New Plan", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = primaryColor)
             }
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -74,14 +74,16 @@ fun CreatePlanScreen(
             OutlinedTextField(
                 value = viewModel.title,
                 onValueChange = { viewModel.title = it },
-                placeholder = { Text("e.g., Summer Office Renovation", color = Color.Gray, fontSize = 14.sp) },
+                placeholder = { Text("e.g., Summer Office Renovation", color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f), fontSize = 14.sp) },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = fieldBackground,
-                    unfocusedContainerColor = fieldBackground,
+                    focusedContainerColor = surfaceVariantColor,
+                    unfocusedContainerColor = surfaceVariantColor,
                     focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedTextColor = textColor,
+                    unfocusedTextColor = textColor
                 ),
                 singleLine = true
             )
@@ -95,13 +97,13 @@ fun CreatePlanScreen(
                 items(categories) { category ->
                     val isSelected = category == selectedCategory
                     Surface(
-                        color = if (isSelected) PrimaryNavy else fieldBackground,
+                        color = if (isSelected) primaryColor else surfaceVariantColor,
                         shape = RoundedCornerShape(20.dp),
                         modifier = Modifier.clickable { selectedCategory = category }
                     ) {
                         Text(
                             text = category,
-                            color = if (isSelected) Color.White else Color.DarkGray,
+                            color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 13.sp,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
@@ -118,14 +120,16 @@ fun CreatePlanScreen(
             OutlinedTextField(
                 value = viewModel.description,
                 onValueChange = { viewModel.description = it },
-                placeholder = { Text("What is the goal of this plan?", color = Color.Gray, fontSize = 14.sp) },
+                placeholder = { Text("What is the goal of this plan?", color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f), fontSize = 14.sp) },
                 modifier = Modifier.fillMaxWidth().height(120.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = fieldBackground,
-                    unfocusedContainerColor = fieldBackground,
+                    focusedContainerColor = surfaceVariantColor,
+                    unfocusedContainerColor = surfaceVariantColor,
                     focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedTextColor = textColor,
+                    unfocusedTextColor = textColor
                 )
             )
 
@@ -136,23 +140,21 @@ fun CreatePlanScreen(
             Button(
                 onClick = {
                     if (isValid) {
-                        // NOTE: If your viewmodel's savePlan needs the category, pass it in!
-                        // viewModel.savePlan(category = selectedCategory) { onNavigateBack() }
                         viewModel.savePlan { onNavigateBack() }
                     }
                 },
                 enabled = isValid,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp)
+                    .height(80.dp)
                     .padding(bottom = 24.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = PrimaryNavy,
-                    disabledContainerColor = Color.LightGray
+                    containerColor = primaryColor,
+                    disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
                 )
             ) {
-                Text("Create Plan", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text("Create Plan", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimary)
             }
         }
     }
