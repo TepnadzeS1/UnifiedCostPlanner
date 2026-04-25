@@ -11,6 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -19,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sandro.unifiedcostplanner.features.planner.domain.model.Plan
 import com.sandro.unifiedcostplanner.features.planner.presentation.plan_detail.components.SwipeToDeleteContainer
+import com.sandro.unifiedcostplanner.features.planner.presentation.components.EmptyState
 import com.sandro.unifiedcostplanner.features.planner.presentation.plan_list.components.PlanCard
 import com.sandro.unifiedcostplanner.features.planner.presentation.plan_list.viewmodel.PlanListViewModel
 import com.sandro.unifiedcostplanner.ui.components.UnifiedTopBar
@@ -87,22 +89,39 @@ private fun PlanListContent(
     onNavigateToDetails: (String) -> Unit,
     onDeletePlan: (String) -> Unit
 ) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues),
-        contentPadding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        items(items = plans, key = { it.id }) { plan ->
-            SwipeToDeleteContainer(
-                item = plan,
-                onDelete = { onDeletePlan(plan.id) }
-            ) {
-                PlanCard(
-                    plan = plan,
-                    onClick = { onNavigateToDetails(plan.id) }
-                )
+    if (plans.isEmpty()) {
+        // 🌟 Premium Empty State
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            contentAlignment = Alignment.Center
+        ) {
+            EmptyState( // Make sure to import this from your components folder!
+                title = "No Plans Yet",
+                message = "You haven't created any cost plans.\nTap the + button below to start tracking your first project!"
+            )
+        }
+    } else {
+        // 📋 The Real List
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            // Note: Increased bottom padding to 100.dp so the FAB doesn't hide the last item!
+            contentPadding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 100.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(items = plans, key = { it.id }) { plan ->
+                SwipeToDeleteContainer(
+                    item = plan,
+                    onDelete = { onDeletePlan(plan.id) }
+                ) {
+                    PlanCard(
+                        plan = plan,
+                        onClick = { onNavigateToDetails(plan.id) }
+                    )
+                }
             }
         }
     }

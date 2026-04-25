@@ -19,10 +19,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sandro.unifiedcostplanner.ui.theme.PrimaryNavy
+import android.content.Intent
+import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.sandro.unifiedcostplanner.features.settings.presentation.viewmodel.SettingsViewModel
 
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(
+    viewModel: SettingsViewModel = hiltViewModel()
+) {
     val backgroundColor = Color(0xFFF8F9FA)
+    val context = LocalContext.current
 
     // Mock states for toggles
     var notificationsEnabled by remember { mutableStateOf(true) }
@@ -85,10 +92,10 @@ fun SettingsScreen() {
             Spacer(modifier = Modifier.height(8.dp))
             Surface(color = Color.White, shape = RoundedCornerShape(16.dp), modifier = Modifier.fillMaxWidth()) {
                 Column {
-                    SettingsItem(icon = Icons.Default.Payments, title = "Default Currency", subtitle = "GEL (₾)", onClick = { /* TODO */ })
-                    Divider(color = backgroundColor, thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                    SettingsItem(icon = Icons.Default.Payments, title = "Default Currency", subtitle = "GEL (₾)", onClick = { /* TODO: Currency Picker */ })
+                    HorizontalDivider(color = backgroundColor, thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
                     SettingsToggleItem(icon = Icons.Default.Notifications, title = "Push Notifications", checked = notificationsEnabled, onCheckedChange = { notificationsEnabled = it })
-                    Divider(color = backgroundColor, thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                    HorizontalDivider(color = backgroundColor, thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
                     SettingsToggleItem(icon = Icons.Default.DarkMode, title = "Dark Theme", checked = darkThemeEnabled, onCheckedChange = { darkThemeEnabled = it })
                 }
             }
@@ -100,9 +107,20 @@ fun SettingsScreen() {
             Spacer(modifier = Modifier.height(8.dp))
             Surface(color = Color.White, shape = RoundedCornerShape(16.dp), modifier = Modifier.fillMaxWidth()) {
                 Column {
-                    SettingsItem(icon = Icons.Default.Download, title = "Export Data to CSV", onClick = { /* TODO */ })
-                    Divider(color = backgroundColor, thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
-                    SettingsItem(icon = Icons.Default.DeleteForever, title = "Erase All Plans", titleColor = Color(0xFFD32F2F), onClick = { /* TODO */ })
+                    // 🚀 WIRED UP EXPORT BUTTON
+                    SettingsItem(icon = Icons.Default.Download, title = "Export Data to CSV", onClick = {
+                        viewModel.generateCsvData { csvContent ->
+                            val sendIntent = Intent(Intent.ACTION_SEND).apply {
+                                type = "text/csv"
+                                putExtra(Intent.EXTRA_SUBJECT, "Unified Cost Planner - Export")
+                                putExtra(Intent.EXTRA_TEXT, csvContent)
+                            }
+                            val shareIntent = Intent.createChooser(sendIntent, "Export Plans to CSV")
+                            context.startActivity(shareIntent)
+                        }
+                    })
+                    HorizontalDivider(color = backgroundColor, thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                    SettingsItem(icon = Icons.Default.DeleteForever, title = "Erase All Plans", titleColor = Color(0xFFD32F2F), onClick = { /* TODO: Wipe DB */ })
                 }
             }
 
